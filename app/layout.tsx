@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Space_Mono, DM_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -36,7 +37,10 @@ export default function RootLayout({
       lang="en"
       className={`${outfit.variable} ${spaceMono.variable} ${dmSans.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
