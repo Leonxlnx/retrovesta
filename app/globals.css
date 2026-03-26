@@ -1,14 +1,21 @@
-/* ===========================
-   RetroVesta — Global Styles
-   =========================== */
+/* ======================================
+   RetroVesta — Clean Light, Strong Contrast
+   ====================================== */
 
 :root {
-  --bg-color: #fafafb;
-  --text-main: #0a0a0a;
-  --text-muted: #737373;
-  --board-bg: #111111;
-  --flap-bg: #1c1c1c;
-  --flap-text: #ffffff;
+  --bg: #ffffff;
+  --text: #111111;
+  --text-mid: #555555;
+  --text-light: #999999;
+  --accent: #e8380d;
+  --accent-hover: #d03008;
+  --surface: #f4f4f2;
+  --border: rgba(0, 0, 0, 0.08);
+
+  /* Board */
+  --board-bg: #0a0a0a;
+  --flap-bg: #161616;
+  --flap-text: #f0efe9;
   --accent-green: #10b981;
   --accent-orange: #f97316;
   --accent-purple: #a855f7;
@@ -23,174 +30,294 @@
 }
 
 body {
-  background-color: var(--bg-color);
-  font-family: var(--font-inter), "Inter", sans-serif;
-  color: var(--text-main);
+  background-color: var(--bg);
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif;
+  color: var(--text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
 }
 
-/* --- Header --- */
+/* ─── Floating Pill Navbar ─── */
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 48px;
-  width: 100%;
-  background-color: rgba(250, 250, 251, 0.8);
-  backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+.floating-nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
 }
 
-.logo {
-  font-size: 22px;
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-radius: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+              0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.nav-logo {
+  font-family: var(--font-space-mono), "Space Mono", monospace;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: -1px;
-  color: var(--text-main);
+  letter-spacing: 1px;
+  color: var(--text);
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 32px;
+.nav-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.1);
 }
 
-.nav-links a {
-  text-decoration: none;
-  color: var(--text-muted);
+.nav-link {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: color 0.2s;
+  font-weight: 500;
+  color: var(--text-mid);
+  text-decoration: none;
+  transition: color 0.15s;
 }
 
-.nav-links a:hover {
-  color: var(--text-main);
+.nav-link:hover {
+  color: var(--text);
 }
 
-.audio-toggle {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 8px;
+.nav-audio {
+  display: grid;
+  place-items: center;
+  padding: 6px;
   border-radius: 50%;
-  background: #f0f0f0;
-  border: none;
-  transition: background 0.2s;
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.15s;
 }
 
-.audio-toggle:hover {
-  background: #e5e5e5;
+.nav-audio:hover {
+  color: var(--text);
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
-.audio-toggle svg {
-  width: 14px;
-  height: 14px;
-  fill: var(--text-main);
-}
-
-/* --- Hero Section --- */
+/* ─── Hero ─── */
 
 .hero {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 60px;
-  padding: 0 20px;
+  padding: 160px 48px 72px;
+  overflow: hidden;
+  min-height: 560px;
+}
+
+/* Scattered mini-flap background */
+.hero-flaps-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mini-flap {
+  position: absolute;
+  width: 32px;
+  height: 46px;
+  background: var(--surface);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  opacity: 0;
+  transform-origin: center center;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+  animation: float 6s ease-in-out infinite;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mini-flap.visible {
+  opacity: 0.5;
+  animation: entrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             float 6s ease-in-out infinite;
+}
+
+.mini-flap.flipping {
+  opacity: 0.75;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes entrance {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(0deg);
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  25%      { translate: 2px -4px; }
+  50%      { translate: -1px -6px; }
+  75%      { translate: 3px -2px; }
+}
+
+.mini-flap-char {
+  font-family: var(--font-space-mono), "Space Mono", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0.4;
+  user-select: none;
+  line-height: 1;
+  z-index: 1;
+  transition: opacity 0.15s ease;
+}
+
+.mini-flap.flipping .mini-flap-char {
+  opacity: 0.65;
+}
+
+.mini-flap-line {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-50%);
+}
+
+/* Hero content above the flap bg */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero h1 {
-  font-size: 52px;
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -1.5px;
-  max-width: 550px;
-  margin-bottom: 20px;
-  color: var(--text-main);
+  font-family: var(--font-outfit), "Outfit", sans-serif;
+  font-size: clamp(42px, 7vw, 80px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -3px;
+  margin-bottom: 24px;
+  color: var(--text);
+  max-width: 800px;
+  text-wrap: balance;
 }
 
 .subtitle {
-  font-size: 16px;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text-mid);
+  margin-bottom: 44px;
+  max-width: 520px;
+  text-wrap: balance;
 }
 
-/* --- Email Form --- */
+/* ─── Email Form (inline in hero) ─── */
 
 .email-form {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 60px;
+  width: 100%;
+  max-width: 460px;
+  margin-bottom: 0;
 }
 
-.email-form input {
-  padding: 14px 20px;
-  font-size: 14px;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  width: 260px;
-  outline: none;
-  font-family: var(--font-inter), "Inter", sans-serif;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 5px;
+  border: 1px solid var(--border);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.email-form input:focus {
-  border-color: #ccc;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.form-row:focus-within {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.03);
+}
+
+.email-form input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  min-width: 0;
+}
+
+.email-form input::placeholder {
+  color: var(--text-light);
 }
 
 .email-form button {
-  background-color: var(--text-main);
-  color: white;
+  background: var(--accent);
+  color: #ffffff;
   border: none;
-  border-radius: 8px;
-  padding: 0 24px;
-  font-size: 14px;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  font-family: var(--font-inter), "Inter", sans-serif;
-  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+  transition: all 0.15s ease;
 }
 
 .email-form button:hover {
-  background-color: #333;
+  background: var(--accent-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(232, 56, 13, 0.2);
 }
 
 .email-form button:active {
   transform: translateY(0);
+  box-shadow: none;
 }
 
-/* --- Split-Flap Board --- */
+.email-form button.submitted {
+  background: var(--accent-green);
+}
+
+/* ─── Split-Flap Board ─── */
 
 .board-wrapper {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 100px;
+  padding: 0 40px 120px;
   perspective: 1000px;
-  padding: 0 20px;
 }
 
 .board {
   background-color: var(--board-bg);
-  padding: 40px;
+  padding: 36px;
   border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2),
-    inset 0 2px 4px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06),
+              0 16px 48px rgba(0, 0, 0, 0.12),
+              0 32px 80px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   position: relative;
   max-width: 100%;
   overflow-x: auto;
@@ -198,80 +325,92 @@ body {
 
 .board-row {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   align-items: center;
   justify-content: center;
   min-width: max-content;
 }
 
-/* Color side tabs */
 .side-tab {
-  width: 16px;
-  height: 60px;
-  border-radius: 4px;
-  margin: 0 12px;
+  width: 12px;
+  height: 50px;
+  border-radius: 3px;
+  margin: 0 8px;
   transition: background-color 0.8s ease;
 }
 
-/* Single flap */
 .flap {
-  width: 54px;
-  height: 80px;
+  width: 50px;
+  height: 74px;
   background-color: var(--flap-bg);
-  border-radius: 6px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 2px 6px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04),
+              0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Horizontal divider line */
 .flap::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 0;
   width: 100%;
-  height: 2px;
-  background-color: rgba(0, 0, 0, 0.8);
+  height: 1.5px;
+  background-color: rgba(0, 0, 0, 0.7);
   transform: translateY(-50%);
   z-index: 10;
 }
 
 .flap-text {
   font-family: var(--font-space-mono), "Space Mono", monospace;
-  font-size: 48px;
+  font-size: 44px;
   color: var(--flap-text);
   font-weight: 400;
   text-transform: uppercase;
   z-index: 5;
   user-select: none;
   line-height: 1;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
-/* --- Responsive --- */
+/* ─── Responsive ─── */
 
 @media (max-width: 768px) {
-  .header {
-    padding: 16px 20px;
+  .floating-nav {
+    top: 12px;
+  }
+
+  .nav-inner {
+    padding: 8px 16px;
+    gap: 12px;
+  }
+
+  .hero {
+    padding: 120px 20px 40px;
   }
 
   .hero h1 {
-    font-size: 36px;
+    letter-spacing: -2px;
   }
 
-  .email-form {
+  .form-row {
     flex-direction: column;
-    align-items: center;
+    padding: 6px;
   }
 
   .email-form input {
+    text-align: center;
+    padding: 12px;
+  }
+
+  .email-form button {
     width: 100%;
-    max-width: 300px;
+    padding: 12px;
+    text-align: center;
   }
 
   .board {
@@ -280,42 +419,42 @@ body {
   }
 
   .flap {
-    width: 36px;
-    height: 54px;
+    width: 34px;
+    height: 50px;
   }
 
   .flap-text {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   .side-tab {
-    width: 10px;
-    height: 40px;
-    margin: 0 6px;
+    width: 8px;
+    height: 36px;
+    margin: 0 5px;
   }
 }
 
 @media (max-width: 480px) {
   .hero h1 {
-    font-size: 28px;
+    letter-spacing: -1.5px;
   }
 
-  .nav-links a {
-    display: none;
+  .subtitle {
+    font-size: 15px;
   }
 
   .flap {
-    width: 28px;
-    height: 42px;
+    width: 26px;
+    height: 40px;
   }
 
   .flap-text {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .side-tab {
-    width: 8px;
-    height: 32px;
-    margin: 0 4px;
+    width: 6px;
+    height: 28px;
+    margin: 0 3px;
   }
 }
